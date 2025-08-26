@@ -1,6 +1,11 @@
+using Catalog;
+using Catalog.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
+
+builder.AddNpgsqlDbContext<ProductDbContext>("catalog-db");
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -10,6 +15,8 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.MapDefaultEndpoints();
+
+app.UseMigrations();
 
 if (app.Environment.IsDevelopment())
 {
