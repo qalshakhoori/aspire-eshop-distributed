@@ -1,0 +1,28 @@
+@Basket_HostAddress = https://localhost:7279/basket
+
+GET {{Basket_HostAddress}}/qalshakhoori
+Accept: application/json
+
+###
+POST  {{Basket_HostAddress}}
+Content-Type: application/json
+
+{
+    "UserName": "qalshakhoori",
+    "Items": [
+        {
+        "productId": 1,
+        "productName": "Solar Powered Flashlight",
+        "price": 19.99,
+        "quantity": 1
+        },
+        {
+        "productId": 2,
+        "productName": "Hiking",
+        "price": 24.99,
+        "quantity": 1
+        }
+    ]
+}
+
+###
