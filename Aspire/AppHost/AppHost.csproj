@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.AppHost" Version="9.4.1" />
+    <PackageReference Include="Aspire.Hosting.Keycloak" Version="9.4.1-preview.1.25408.4" />
     <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.4.1" />
     <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="9.4.1" />
     <PackageReference Include="Aspire.Hosting.Redis" Version="9.4.1" />
@@ -20,7 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../Services/Basket/Basket.csproj" />
-    <ProjectReference Include="..\..\Services\Catalog\Catalog.csproj" />
+    <ProjectReference Include="../../Services/Catalog/Catalog.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,11 +1,29 @@
 @Basket_HostAddress = https://localhost:7279/basket
+@Keycloak_Token_Endpoint = http://localhost:8080/realms/eshop/protocol/openid-connect/token
+@Keycloak_Client_Id = eshop-client
+@Keycloak_Username = test
+@Keycloak_Password = Test1234
+@Keycloak_Grant_Type = password
+@Keycloak_Scope = email openid profile
+
+### Get Token from Keycloak
+# @name login
+POST {{Keycloak_Token_Endpoint}}
+Content-Type: application/x-www-form-urlencoded
+
+client_id={{Keycloak_Client_Id}}&username={{Keycloak_Username}}&password={{Keycloak_Password}}&grant_type={{Keycloak_Grant_Type}}&scope={{Keycloak_Scope}}
+
+### Use the token to access protected endpoints
+@access_token = {{login.response.body.access_token}}
 
 GET {{Basket_HostAddress}}/qalshakhoori
 Accept: application/json
+Authorization: Bearer {{access_token}}
 
 ###
 POST  {{Basket_HostAddress}}
 Content-Type: application/json
+Authorization: Bearer {{access_token}}
 
 {
     "UserName": "qalshakhoori",

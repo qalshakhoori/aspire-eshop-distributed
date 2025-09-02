@@ -16,6 +16,7 @@ public static class BasketEndpoints
         .WithName("GetBasket")
         .Produces<ShoppingCart>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status404NotFound)
+        .RequireAuthorization()
         .WithOpenApi();
 
         group.MapPost("/", async (ShoppingCart basket, BasketService basketService) =>
@@ -25,6 +26,7 @@ public static class BasketEndpoints
         })
         .WithName("UpdateBasket")
         .Produces<ShoppingCart>(StatusCodes.Status200OK)
+        .RequireAuthorization()
         .WithOpenApi();
 
         group.MapDelete("/{username}", async (string username, BasketService basketService) =>
@@ -34,6 +36,7 @@ public static class BasketEndpoints
         })
         .WithName("DeleteBasket")
         .Produces(StatusCodes.Status204NoContent)
+        .RequireAuthorization()
         .WithOpenApi();
     }
 }

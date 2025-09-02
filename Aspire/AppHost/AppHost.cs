@@ -20,8 +20,11 @@ var rabbitmq = builder
   .WithDataVolume()
   .WithLifetime(ContainerLifetime.Persistent);
 
-// Add projects and cloud-related services to the container.
+var keycloak = builder.AddKeycloak("keycloak", 8080)
+  .WithDataVolume()
+  .WithLifetime(ContainerLifetime.Persistent);
 
+// Add projects and cloud-related services to the container.
 var catalogSrv = builder.AddProject<Projects.Catalog>("catalog-srv")
   .WithReference(catalogDb)
   .WithReference(rabbitmq)
@@ -32,7 +35,9 @@ var basketSrv = builder.AddProject<Projects.Basket>("basket-srv")
   .WithReference(cache)
   .WithReference(rabbitmq)
   .WithReference(catalogSrv)
+  .WithReference(keycloak)
   .WaitFor(cache)
-  .WaitFor(rabbitmq);
+  .WaitFor(rabbitmq)
+  .WaitFor(keycloak); 
 
 builder.Build().Run();
