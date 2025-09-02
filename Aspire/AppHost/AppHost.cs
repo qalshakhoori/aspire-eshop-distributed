@@ -14,15 +14,25 @@ var cache = builder.AddRedis("cache")
   .WithDataVolume()
   .WithLifetime(ContainerLifetime.Persistent);
 
+var rabbitmq = builder
+  .AddRabbitMQ("rabbitmq")
+  .WithManagementPlugin()
+  .WithDataVolume()
+  .WithLifetime(ContainerLifetime.Persistent);
+
 // Add projects and cloud-related services to the container.
 
 var catalogSrv = builder.AddProject<Projects.Catalog>("catalog-srv")
   .WithReference(catalogDb)
-  .WaitFor(catalogDb);
+  .WithReference(rabbitmq)
+  .WaitFor(catalogDb)
+  .WaitFor(rabbitmq);
 
 var basketSrv = builder.AddProject<Projects.Basket>("basket-srv")
   .WithReference(cache)
+  .WithReference(rabbitmq)
   .WithReference(catalogSrv)
-  .WaitFor(cache);
+  .WaitFor(cache)
+  .WaitFor(rabbitmq);
 
 builder.Build().Run();

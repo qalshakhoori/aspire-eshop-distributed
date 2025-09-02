@@ -32,6 +32,18 @@ Content-Type: application/json
     "imageUrl": "updated-product-image.jpg"
 }
 
+### Update an Existing Product
+PUT {{Catalog_HostAddress}}/1
+Content-Type: application/json
+
+{
+    "id": 10,
+    "name": "Updated Product 1",
+    "description": "This is an updated product",
+    "price": 5.98,
+    "imageUrl": "updated-product-image.jpg"
+}
+
 ### Delete a Product
 DELETE {{Catalog_HostAddress}}/10
 Content-Type: application/json

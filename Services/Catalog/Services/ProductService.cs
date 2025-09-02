@@ -1,8 +1,10 @@
 using Catalog.Data;
+using MassTransit;
+using ServiceDefaults.Messaging.Events;
 
 namespace Catalog.Services;
 
-public class ProductService(ProductDbContext dbContext)
+public class ProductService(ProductDbContext dbContext, IBus bus)
 {
     public async Task CreateProductAsync(Product product)
     {
@@ -16,6 +18,21 @@ public class ProductService(ProductDbContext dbContext)
     {
         ArgumentNullException.ThrowIfNull(productInDb);
         ArgumentNullException.ThrowIfNull(product);
+
+        if (productInDb.Price != product.Price)
+        {
+            // publish event to message broker
+            var IntegrationEvent = new ProductPriceChangedIntegrationEvent
+            {
+                ProductId = productInDb.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                ImageUrl = product.ImageUrl
+            };
+
+            await bus.Publish(IntegrationEvent);
+        }
 
         productInDb.Name = product.Name;
         productInDb.Description = product.Description;
