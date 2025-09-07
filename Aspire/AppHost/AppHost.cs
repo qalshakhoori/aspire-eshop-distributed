@@ -38,6 +38,15 @@ var basketSrv = builder.AddProject<Projects.Basket>("basket-srv")
   .WithReference(keycloak)
   .WaitFor(cache)
   .WaitFor(rabbitmq)
-  .WaitFor(keycloak); 
+  .WaitFor(keycloak);
+
+
+builder.AddProject<Projects.WebApp>("webapp")
+  .WithExternalHttpEndpoints()
+  .WithReference(cache)
+  .WithReference(catalogSrv)
+  .WithReference(basketSrv)
+  .WaitFor(catalogSrv)
+  .WaitFor(basketSrv); 
 
 builder.Build().Run();

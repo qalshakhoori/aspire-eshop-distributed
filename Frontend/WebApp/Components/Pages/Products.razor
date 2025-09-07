@@ -1,0 +1,56 @@
+﻿@page "/products"
+@using Microsoft.AspNetCore.OutputCaching
+@inject CatalogAPIClient CatalogAPIClient
+@attribute [StreamRendering(true)]
+@attribute [OutputCache(Duration = 5)]
+
+<PageTitle>Products</PageTitle>
+
+<h3>Products</h3>
+
+<p>Here are some of our amazing outdoor products that you can purchase</p>
+<p>This component demonstrates fetching data from a service.</p>
+
+@if(products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!products.Any())
+{
+    <p><em>No products found.</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
+            {
+                <tr>
+                    <td>
+                        <img src="https://raw.github" alt="@product.Name" width="100" />
+                    </td>
+                    <td>@product.Name</td>
+                    <td>@product.Description</td>
+                    <td>@product.Price.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<Product>? products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await CatalogAPIClient.GetProductsAsync();
+    }
+}
