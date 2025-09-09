@@ -65,5 +65,14 @@ public static class ProductEndpoints
         .WithName("DeleteProduct")
         .Produces(StatusCodes.Status204NoContent)
         .Produces(StatusCodes.Status404NotFound);
+
+        // Support endpoint using AI service
+        group.MapGet("/support/{query}", async (string query, ProductAIService service) =>
+        {
+            var response = await service.SupportAsync(query);
+            return Results.Ok(response);
+        })
+        .WithName("Support")
+        .Produces<string>(StatusCodes.Status200OK);
     }
 }

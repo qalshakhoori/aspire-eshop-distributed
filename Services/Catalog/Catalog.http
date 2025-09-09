@@ -47,3 +47,7 @@ Content-Type: application/json
 ### Delete a Product
 DELETE {{Catalog_HostAddress}}/10
 Content-Type: application/json
+
+### Support Query using AI
+GET {{Catalog_HostAddress}}/support/give-me-one-product-recommendation
+Accept: application/json

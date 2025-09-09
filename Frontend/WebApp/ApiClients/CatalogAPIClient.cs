@@ -18,4 +18,10 @@ public class CatalogAPIClient(HttpClient client)
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<Product>() ?? throw new Exception("Product not found");
     }
+
+    public async Task<string> SupportProducts(string query)
+    {
+        var response = await client.GetFromJsonAsync<string>($"/products/support/{query}");
+        return response!;
+    }
 }

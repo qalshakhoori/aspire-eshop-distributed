@@ -4,32 +4,50 @@ var builder = DistributedApplication.CreateBuilder(args);
 var postgres =
   builder.AddPostgres("postgres")
   .WithPgAdmin()
-  .WithDataVolume()
+  // .WithDataVolume()
   .WithLifetime(ContainerLifetime.Persistent);
 
 var catalogDb = postgres.AddDatabase("catalog-db");
 
 var cache = builder.AddRedis("cache")
   .WithRedisInsight()
-  .WithDataVolume()
+  // .WithDataVolume()
   .WithLifetime(ContainerLifetime.Persistent);
 
 var rabbitmq = builder
   .AddRabbitMQ("rabbitmq")
   .WithManagementPlugin()
-  .WithDataVolume()
+  // .WithDataVolume()
   .WithLifetime(ContainerLifetime.Persistent);
 
 var keycloak = builder.AddKeycloak("keycloak", 8080)
-  .WithDataVolume()
+  // .WithDataVolume()
   .WithLifetime(ContainerLifetime.Persistent);
+
+if (builder.ExecutionContext.IsRunMode)
+{
+  // Use a data volume in run mode to persist data across restarts
+  postgres.WithDataVolume();
+  cache.WithDataVolume();
+  rabbitmq.WithDataVolume();
+  keycloak.WithDataVolume();
+}
+
+var ollama = builder.AddOllama("ollama", 11434)
+  .WithDataVolume()
+  .WithLifetime(ContainerLifetime.Persistent)
+  .WithOpenWebUI();
+
+var llama = ollama.AddModel("llama3.2");
 
 // Add projects and cloud-related services to the container.
 var catalogSrv = builder.AddProject<Projects.Catalog>("catalog-srv")
   .WithReference(catalogDb)
   .WithReference(rabbitmq)
+  .WithReference(llama)
   .WaitFor(catalogDb)
-  .WaitFor(rabbitmq);
+  .WaitFor(rabbitmq)
+  .WaitFor(llama);
 
 var basketSrv = builder.AddProject<Projects.Basket>("basket-srv")
   .WithReference(cache)
@@ -47,6 +65,6 @@ builder.AddProject<Projects.WebApp>("webapp")
   .WithReference(catalogSrv)
   .WithReference(basketSrv)
   .WaitFor(catalogSrv)
-  .WaitFor(basketSrv); 
+  .WaitFor(basketSrv);
 
 builder.Build().Run();
