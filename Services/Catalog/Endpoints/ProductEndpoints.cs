@@ -66,6 +66,14 @@ public static class ProductEndpoints
         .Produces(StatusCodes.Status204NoContent)
         .Produces(StatusCodes.Status404NotFound);
 
+        group.MapGet("search/{query}", async (string query, ProductService productService) =>
+        {
+            var products = await productService.SearchProductsAsync(query);
+            return Results.Ok(products);
+        })
+        .WithName("SearchProducts")
+        .Produces<IEnumerable<Product>>(StatusCodes.Status200OK);
+
         // Support endpoint using AI service
         group.MapGet("/support/{query}", async (string query, ProductAIService service) =>
         {
@@ -73,6 +81,14 @@ public static class ProductEndpoints
             return Results.Ok(response);
         })
         .WithName("Support")
+        .Produces<string>(StatusCodes.Status200OK);
+
+        group.MapGet("/aisearch/{query}", async (string query, ProductAIService service) =>
+        {
+            var response = await service.SearchProductsAsync(query);
+            return Results.Ok(response);
+        })
+        .WithName("AISearchProducts")
         .Produces<string>(StatusCodes.Status200OK);
     }
 }

@@ -60,4 +60,13 @@ public class ProductService(ProductDbContext dbContext, IBus bus)
     {
         return await dbContext.Products.ToListAsync();
     }
+
+    public async Task<IEnumerable<Product>> SearchProductsAsync(string query)
+    {
+        return await dbContext
+            .Products
+            .AsNoTracking() // use as no tracking for read only operations, this makes ef core query faster
+            .Where(p => p.Name.Contains(query) || p.Description.Contains(query))
+            .ToListAsync();
+    }
 }

@@ -24,4 +24,11 @@ public class CatalogAPIClient(HttpClient client)
         var response = await client.GetFromJsonAsync<string>($"/products/support/{query}");
         return response!;
     }
+
+    public async Task<IEnumerable<Product>> SearchProducts(string query, bool aiSearch)
+    {
+        var endpoint = aiSearch ? $"/products/aisearch/{query}" : $"/products/search/{query}";
+        var response = await client.GetFromJsonAsync<IEnumerable<Product>>(endpoint);
+        return response!;
+    }
 }
